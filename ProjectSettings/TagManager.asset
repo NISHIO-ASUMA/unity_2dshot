@@ -6,6 +6,12 @@ TagManager:
   tags:
   - Fade
   - Wall
+  - Bullet
+  - Enemy01
+  - Enemy02
+  - Enemy03
+  - Enemy04
+  - Enemy05
   layers:
   - Default
   - TransparentFX
