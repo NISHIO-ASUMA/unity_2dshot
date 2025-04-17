@@ -149,3 +149,5 @@ MonoBehaviour:
   moveRange: 10
   bulletPrefab: {fileID: 2243197587713270252, guid: 4753df0445261054998b0dd2c278e8fd, type: 3}
   fireInterval: 1
+  Player: {fileID: 1649993949440814737, guid: ab6710b5cb6b13c429df4ed4b38236c6, type: 3}
+  chaseSpeed: 2

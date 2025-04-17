@@ -174,6 +174,5 @@ public class EnemyController : MonoBehaviour
             transform.position = startPosition + moveDirection * pingPong;
         }
 
-        Debug.Log("Player Position: " + Player.transform.position);
     }
 }
