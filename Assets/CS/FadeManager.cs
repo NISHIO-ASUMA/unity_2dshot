@@ -15,6 +15,10 @@ public class FadeManager : MonoBehaviour
     public float alpha = 0.0f;      // フェードの透過率
     public float fadeSpeed = 0.2f;  // フェードのスピード
 
+    // 外部から取得可能なプロパティを追加
+    public static bool IsFading { get; private set; } = false;
+
+
     // Start is called before the first frame update
     void Start()
     {

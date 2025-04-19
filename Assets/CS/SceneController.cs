@@ -18,13 +18,29 @@ public class SceneController : MonoBehaviour
     {
         // FadeManagerからisFadeInstanceを参照する
         if (!FadeManager.isFadeInstance)
-        {// isFadeInstanceがfalseだったら
-
-            Instantiate(fade);
+        {
+            // ここで代入しておけばすぐ使える
+            FadeCanvas = Instantiate(fade);
         }
 
-        // 起動時用にCanvasの生成を少し待つ (今回の場合は0.02秒後に呼び出す)
-        Invoke("findFadeObject", 0.02f);
+        // すぐ代入できてるので、遅延呼び出しも不要
+        if (FadeCanvas == null)
+        {
+            // 念のため
+            FadeCanvas = GameObject.FindGameObjectWithTag("Fade");
+        }
+
+        // フェード開始
+        FadeCanvas.GetComponent<FadeManager>().FadeIn();
+        // FadeManagerからisFadeInstanceを参照する
+        //if (!FadeManager.isFadeInstance)
+        //{// isFadeInstanceがfalseだったら
+
+        //    Instantiate(fade);
+        //}
+
+        //// 起動時用にCanvasの生成を少し待つ (今回の場合は0.02秒後に呼び出す)
+        //Invoke("findFadeObject", 0.02f);
     }
 
     // Update is called once per frame
@@ -61,6 +77,12 @@ public class SceneController : MonoBehaviour
     // オブジェクト検知用関数
     void findFadeObject()
     {
+        // nullチェック
+        if (FadeCanvas == null)
+        {
+            Debug.LogError("FadeCanvas（タグ: Fade）が見つかりませんでした！");
+            return;
+        }
         // Canvasを見つける (タグを探す)
         FadeCanvas = GameObject.FindGameObjectWithTag("Fade");
 
@@ -71,13 +93,31 @@ public class SceneController : MonoBehaviour
     // シーン切り替え用の関数
     public async void scenChange(int sceneIndex)
     {
+        // nullチェック
+        if (FadeCanvas == null)
+        {
+            Debug.LogWarning("FadeCanvas が見つかっていません！");
+            return;
+        }
+
         // フラグを立てて,フェードアウト関数を呼び出す
         FadeCanvas.GetComponent<FadeManager>().FadeOut();
 
         // 暗転するまでここで処理を止める
-        await Task.Delay(200);
+        await Task.Delay(100);
 
         // 暗転した後にシーンを切り替える
         SceneManager.LoadScene(sceneIndex);
+    }
+
+
+    // 独自のシーン遷移を行う
+    private void LoadSceneWithoutManager(int sceneIndex)
+    {
+        // シーン名を取得
+        string sceneName = SceneManager.GetSceneAt(sceneIndex).name;
+
+        // 実際のシーン切り替え
+        UnityEngine.SceneManagement.SceneManager.LoadScene(sceneName);
     }
 }

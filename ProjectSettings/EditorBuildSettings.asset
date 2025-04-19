@@ -9,9 +9,15 @@ EditorBuildSettings:
     path: Assets/Scenes/Title.unity
     guid: 2cda990e2423bbf4892e6590ba056729
   - enabled: 1
+    path: Assets/Scenes/Tutorial.unity
+    guid: 200be133d5c909147a8f06ac5cbc378f
+  - enabled: 1
     path: Assets/Scenes/Game.unity
     guid: 5a45f66afe0f7a24a84b6402404d2fa0
   - enabled: 1
     path: Assets/Scenes/Result.unity
     guid: 95bf9caec4c24244e922cd4fda129794
+  - enabled: 1
+    path: Assets/Scenes/Ranking.unity
+    guid: b21adecc058da324b9d82ad8767dd2af
   m_configObjects: {}
