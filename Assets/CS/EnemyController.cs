@@ -39,6 +39,19 @@ public class EnemyController : MonoBehaviour
     public GameObject Player;      // プレイヤーオブジェクト（Inspectorで設定）
     public float chaseSpeed = 2f;  // 追尾スピード
 
+    Transform playerTr;             // プレイヤーのTransform
+
+    //********************************************
+    // ワープポイント用の変数
+    //********************************************
+    public float warpInterval = 3.0f; // ワープ間隔
+    private float warpTimer = 0f;     // ワープタイマー
+
+    //********************************************
+    // パーティクル生成
+    //********************************************
+    public GameObject hitParticlePrefab;     // 2DパーティクルのPrefab
+
     // Start is called before the first frame update
     void Start()
     {
@@ -47,17 +60,17 @@ public class EnemyController : MonoBehaviour
 
         // タグによって初期の移動方向を設定
         if (CompareTag("Enemy01"))
-        {
+        {// タグがEnemy01
             moveDirection = Vector3.right; // 初期は右向き
             isBouncing = true;             // フラグを有効化する
         }
         else if (CompareTag("Enemy02"))
-        {
+        {// タグがEnemy02
             moveDirection = Vector3.up;    // 初期は上向き
             isCollisionUp = true;          // フラグを有効化する
         }
         else if (CompareTag("Enemy03"))
-        {
+        {// タグがEnemy03
             // ビューポートで4点のパトロールポイントを設定
             patrolPoints.Add(Camera.main.ViewportToWorldPoint(new Vector3(0.1f, 0.83f, 10))); // 左上
             patrolPoints.Add(Camera.main.ViewportToWorldPoint(new Vector3(0.9f, 0.83f, 10))); // 右上
@@ -66,6 +79,22 @@ public class EnemyController : MonoBehaviour
 
             transform.position = patrolPoints[0]; // 最初の位置にセット
             currentPointIndex = 1; // 次に向かう地点をセット
+        }
+        else if (CompareTag("Enemy05"))
+        {// タグがEnemy05            
+            // プレイヤーのTransformを取得（プレイヤーのタグをPlayerに設定必要）
+            playerTr = GameObject.FindGameObjectWithTag("Player").transform;
+
+        }
+        else if (CompareTag("Enemy06"))
+        {// タグがEnemy06
+            // 左・右・中央の3点をワールド座標で設定（Viewportベース）
+            patrolPoints.Add(Camera.main.ViewportToWorldPoint(new Vector3(0.1f, 0.5f, 10))); // 左
+            patrolPoints.Add(Camera.main.ViewportToWorldPoint(new Vector3(0.9f, 0.5f, 10))); // 右
+            patrolPoints.Add(Camera.main.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 10))); // 中央
+
+            transform.position = patrolPoints[0]; // 最初は左
+            currentPointIndex = 1; // 次に向かうのは右
         }
         else
         {
@@ -158,15 +187,33 @@ public class EnemyController : MonoBehaviour
         }
         else if (CompareTag("Enemy05") && Player != null)
         {
-            // プレイヤーの位置を取得
-            Vector3 targetPos = Player.transform.position;
+            // プレイヤーとの距離が0.1f未満になったらそれ以上実行しない
+            if (Vector2.Distance(transform.position, playerTr.position) < 0.1f)
+                return;
 
-            // Z座標を無視してXとYだけを追いかける
-            targetPos.z = transform.position.z;
+            // プレイヤーに向けて進む
+            transform.position = Vector2.MoveTowards
+                (
+                transform.position,
+                new Vector2(playerTr.position.x, playerTr.position.y),
+                chaseSpeed * Time.deltaTime);
+        }
+        else if (CompareTag("Enemy06") && patrolPoints.Count >= 3)
+        {// タグがEnemy06 かつ ポイントのカウントが3より大きくなったら
+            // タイマーを加算
+            warpTimer += Time.deltaTime;
 
-            // 方向ベクトルを計算して移動
-            Vector3 direction = (targetPos - transform.position).normalized;
-            transform.position += direction * chaseSpeed * Time.deltaTime;
+            if (warpTimer >= warpInterval)
+            {// インターバルより大きくなったら
+                // 初期値に戻す
+                warpTimer = 0f;
+
+                // ワープ実行
+                transform.position = patrolPoints[currentPointIndex];
+
+                // 次のポイントに切り替え ( 特定の３点に移動する )
+                currentPointIndex = (currentPointIndex + 1) % patrolPoints.Count;
+            }
         }
         else
         {// それ以外の時
@@ -174,5 +221,38 @@ public class EnemyController : MonoBehaviour
             transform.position = startPosition + moveDirection * pingPong;
         }
 
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        // プレイヤーの弾タグに当たったら
+        if (collision.CompareTag("PlayerBullet"))
+        {
+            // ダメージ処理（今回は1と仮定）
+            EnemyLife--;
+
+            // 弾を消す
+            Destroy(collision.gameObject);
+
+            // 体力が0以下なら自身を削除
+            if (EnemyLife <= 0)
+            {
+                // 敵を消去
+                Destroy(gameObject);
+            }
+            else
+            {
+                // パーティクルを生成
+                if (hitParticlePrefab != null)
+                {
+                    // 衝突位置にパーティクルを生成
+                    GameObject hitParticle = Instantiate(hitParticlePrefab, transform.position, Quaternion.identity);
+
+                    // パーティクルを0.5秒後に消す
+                    Destroy(hitParticle, 0.5f);
+                }
+            }
+
+        }
     }
 }

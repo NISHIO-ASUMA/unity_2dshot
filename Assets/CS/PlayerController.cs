@@ -5,11 +5,14 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {// プレイヤー制御スクリプト
 
+    //***************************
+    // メンバ変数
+    //***************************
     public float fSpeed = 5.0f;    // 移動速度
     public int playerLife = 10;    // 体力
 
     // 弾のゲームオブジェクト
-    public GameObject BulletObj;     
+    public GameObject BulletObj;
 
     private float currentAngle = 0f; // 現在の角度
     private Rigidbody2D rb;          // Rigidbodyを取得する用の変数
@@ -17,10 +20,18 @@ public class PlayerController : MonoBehaviour
 
     Vector3 bulletPoint;             // 弾の位置
 
+    //***************************
+    // サウンド関係のメンバ変数
+    //***************************
+    public AudioClip shotSE;           // 発射時のSE
+    private AudioSource audioSource;   // AudioSourceの取得用
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>(); // Rigidbody2D を取得
         bulletPoint = transform.Find("BulletPoint").localPosition;  // 弾の位置設定
+
+        audioSource = GetComponent<AudioSource>(); // AudioSourceを取得する
     }
 
     void Update()
@@ -81,6 +92,14 @@ public class PlayerController : MonoBehaviour
 
                 // 方向をBulletControllerに伝える
                 bullet.GetComponent<BulletController>().SetDirection(bulletPoint.up);
+
+                // SE再生
+                if (shotSE != null && audioSource != null)
+                {// 弾発射SEがある かつ オーディオソースが取得できていたら
+
+                    // SE再生
+                    audioSource.PlayOneShot(shotSE);
+                }
             }
 
             // 最終的な移動量
@@ -109,6 +128,28 @@ public class PlayerController : MonoBehaviour
             newPosition.y = Mathf.Clamp(newPosition.y, minY, maxY);
 
             rb.MovePosition(newPosition);
+        }
+    }
+
+
+    public void HitDamage(int damage)
+    {
+        // ダメージの数値だけ体力を減らす
+        playerLife -= damage;
+
+        if (playerLife <= 0)
+        {// 体力が0以下
+            Debug.Log("プレイヤー死亡！");
+
+            // シーン遷移でリザルトへ
+            SceneController sceneController = FindObjectOfType<SceneController>();
+
+            if (sceneController != null)
+            {
+                // シーンのリザルト番号を設定し,画面遷移
+                sceneController.scenChange(3);
+            }
+
         }
     }
 }

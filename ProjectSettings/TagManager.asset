@@ -12,6 +12,16 @@ TagManager:
   - Enemy03
   - Enemy04
   - Enemy05
+  - EnemyBullet
+  - Enemy06
+  - Item000
+  - Item001
+  - Item002
+  - Item003
+  - Item004
+  - Item005
+  - PlayerBullet
+  - Spawnenemy
   layers:
   - Default
   - TransparentFX
