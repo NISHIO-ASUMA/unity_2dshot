@@ -102,11 +102,12 @@ MonoBehaviour:
   fEnemyMove: 5
   nAttack: 0
   moveRange: 5
+  fireInterval_1: 0
   bulletPrefab: {fileID: 2243197587713270252, guid: 4753df0445261054998b0dd2c278e8fd, type: 3}
   fireInterval: 1
   Player: {fileID: 1649993949440814737, guid: ab6710b5cb6b13c429df4ed4b38236c6, type: 3}
-  chaseSpeed: 2
-  warpInterval: 3
+  chaseSpeed: 0
+  warpInterval: 0
   hitParticlePrefab: {fileID: 2077029929966733842, guid: d0281397000da194aa6fcf299c4cb7de, type: 3}
 --- !u!61 &3179836117146497104
 BoxCollider2D:

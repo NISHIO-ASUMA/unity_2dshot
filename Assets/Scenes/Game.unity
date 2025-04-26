@@ -162,6 +162,9 @@ MonoBehaviour:
       spawnPosition: {x: -6, y: 2, z: 0}
     - enemyPrefab: {fileID: 5266472300494603028, guid: ab956490280c92e49954984dd4a0e6b0, type: 3}
       spawnPosition: {x: 6, y: -2, z: 0}
+  - enemies:
+    - enemyPrefab: {fileID: 5978145840537847562, guid: 86a281192242ec541bbb65e2ecd155c5, type: 3}
+      spawnPosition: {x: -4, y: 0, z: 10}
 --- !u!4 &167781981
 Transform:
   m_ObjectHideFlags: 0

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class EnemyController : MonoBehaviour
 {// 敵制御スクリプト
@@ -14,6 +15,13 @@ public class EnemyController : MonoBehaviour
     private Vector3 startPosition;     // 初期位置
     private Vector3 moveDirection;     // 移動方向
 
+
+    //*********************************
+    // 敵1で使用
+    //*********************************
+    private float fireTimer_1 = 0f;
+    public float fireInterval_1 = 1.0f; // Enemy01用の発射間隔
+
     //***********************
     // 敵の動作フラグ関係
     //***********************
@@ -23,8 +31,7 @@ public class EnemyController : MonoBehaviour
     //**********************************************
     // 画面内の一定の箇所をループ移動するフラグ関係
     //**********************************************
-    private List<Vector3> patrolPoints = new List<Vector3>(); // 巡回ポイント
-    private int currentPointIndex = 0;                        // 現在の目標ポイント
+
 
     //*********************************************
     // 敵から射出されるバレット
@@ -41,6 +48,9 @@ public class EnemyController : MonoBehaviour
 
     Transform playerTr;             // プレイヤーのTransform
 
+    private List<Vector3> patrolPoints = new List<Vector3>(); // 巡回ポイント
+    private int currentPointIndex = 0;                        // 現在の目標ポイント
+
     //********************************************
     // ワープポイント用の変数
     //********************************************
@@ -51,6 +61,7 @@ public class EnemyController : MonoBehaviour
     // パーティクル生成
     //********************************************
     public GameObject hitParticlePrefab;     // 2DパーティクルのPrefab
+    private object rigidBody;
 
     // Start is called before the first frame update
     void Start()
@@ -71,14 +82,7 @@ public class EnemyController : MonoBehaviour
         }
         else if (CompareTag("Enemy03"))
         {// タグがEnemy03
-            // ビューポートで4点のパトロールポイントを設定
-            patrolPoints.Add(Camera.main.ViewportToWorldPoint(new Vector3(0.1f, 0.83f, 10))); // 左上
-            patrolPoints.Add(Camera.main.ViewportToWorldPoint(new Vector3(0.9f, 0.83f, 10))); // 右上
-            patrolPoints.Add(Camera.main.ViewportToWorldPoint(new Vector3(0.9f, 0.1f, 10))); // 右下
-            patrolPoints.Add(Camera.main.ViewportToWorldPoint(new Vector3(0.1f, 0.1f, 10))); // 左下
 
-            transform.position = patrolPoints[0]; // 最初の位置にセット
-            currentPointIndex = 1; // 次に向かう地点をセット
         }
         else if (CompareTag("Enemy05"))
         {// タグがEnemy05            
@@ -120,6 +124,40 @@ public class EnemyController : MonoBehaviour
             {
                 moveDirection *= -1; // 方向反転
             }
+
+
+            // ======= 弾発射処理をタイマー制御する =======
+            fireTimer_1 += Time.deltaTime; // タイマー進める
+
+            if (fireTimer_1 >= fireInterval_1)
+            {
+                fireTimer_1 = 0f; // タイマーリセット
+
+                // 弾の方向を決める
+                Vector3 bulletDir = Vector3.down;
+
+                if (viewPos.y < 0.5f)
+                {
+                    // 弾を上に発射
+                    bulletDir = Vector3.up;
+                }
+                else
+                {
+                    // 弾を下に発射
+                    bulletDir = Vector3.down;
+                }
+
+                // 弾のオブジェクトを生成
+                GameObject bullet = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
+
+                // BulletController.csからコンポーネントを取得
+                BulletController bc = bullet.GetComponent<BulletController>();
+
+                if (bc != null)
+                {
+                    bc.SetDirection(bulletDir);
+                }
+            }
         }
         else if (CompareTag("Enemy02") && isCollisionUp)
         {// タグがEnemy02 かつ ループがオンなら
@@ -135,21 +173,10 @@ public class EnemyController : MonoBehaviour
                 moveDirection *= -1; // 方向反転
             }
         }
-        else if (CompareTag("Enemy03") && patrolPoints.Count > 0)
-        {// タグがEnemy03 かつ カウントが0以上
-            // 現在の目的地を取得
-            Vector3 target = patrolPoints[currentPointIndex];
+        else if (CompareTag("Enemy03"))
+        {// タグがEnemy03
 
-            // 移動処理 ( 方向を正規化して一定速度で移動 ）
-            Vector3 direction = (target - transform.position).normalized;
-            transform.position += direction * fEnemyMove * Time.deltaTime;
-
-            // 目標ポイントに近づいたら次のポイントへ
-            if (Vector3.Distance(transform.position, target) < 0.1f)
-            {
-                // ポイントのインデックス番号を更新
-                currentPointIndex = (currentPointIndex + 1) % patrolPoints.Count;
-            }
+            // ポイント巡回
         }
         else if(CompareTag("Enemy04"))
         {// タグがEnemy04だったら
