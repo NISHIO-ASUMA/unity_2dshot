@@ -66,7 +66,11 @@ public class PlayerController : MonoBehaviour
                 moveX = fSpeed;
             }
 
+            // ★ ゲームパッド移動入力（左スティック）
+            moveX += Input.GetAxis("Horizontal");
+            moveY += Input.GetAxis("Vertical");
 
+            // キーボード
             if (Input.GetKeyDown(KeyCode.E))
             {
                 currentAngle -= 90f;
@@ -81,8 +85,21 @@ public class PlayerController : MonoBehaviour
                 transform.rotation = Quaternion.Euler(0, 0, currentAngle);
             }
 
-            // ボタンを押したとき
-            if (Input.GetKeyDown(KeyCode.Space))
+            // ゲームパッド
+            if (Input.GetKeyDown(KeyCode.JoystickButton5)) // RBボタン
+            {
+                currentAngle -= 90f;
+                if (currentAngle <= -360f) currentAngle = 0f;
+                transform.rotation = Quaternion.Euler(0, 0, currentAngle);
+            }
+            if (Input.GetKeyDown(KeyCode.JoystickButton4)) // LBボタン
+            {
+                currentAngle += 90f;
+                if (currentAngle >= 360f) currentAngle = 0f;
+                transform.rotation = Quaternion.Euler(0, 0, currentAngle);
+            }
+            // Space or Aボタンを押したとき
+            if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.JoystickButton0))
             {
                 // BulletPointのTransform取得
                 Transform bulletPoint = transform.Find("BulletPoint");
