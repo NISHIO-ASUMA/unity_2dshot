@@ -57,7 +57,7 @@ public class BulletController : MonoBehaviour
 
             if (pc != null)
             {// 取得できたら
-                pc.HitDamage(1); // 好みでダメージ数調整
+                pc.HitDamage(1); // ダメージ数調整
             }
 
             // 弾を消す

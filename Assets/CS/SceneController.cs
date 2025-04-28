@@ -32,15 +32,6 @@ public class SceneController : MonoBehaviour
 
         // フェード開始
         FadeCanvas.GetComponent<FadeManager>().FadeIn();
-        // FadeManagerからisFadeInstanceを参照する
-        //if (!FadeManager.isFadeInstance)
-        //{// isFadeInstanceがfalseだったら
-
-        //    Instantiate(fade);
-        //}
-
-        //// 起動時用にCanvasの生成を少し待つ (今回の場合は0.02秒後に呼び出す)
-        //Invoke("findFadeObject", 0.02f);
     }
 
     // Update is called once per frame
@@ -51,6 +42,12 @@ public class SceneController : MonoBehaviour
         {
             // 現在のシーン番号に1を足した数字を保持する
             int nSceneIndex = SceneManager.GetActiveScene().buildIndex + 1; // 現在のアクティブなシーンを取得,加算
+
+            // もしゲームシーンだったら無視する
+            if (nSceneIndex == 3) 
+            {
+                return;
+            }
 
             // 最大シーン番号と比較,超えそうになったら最初のシーンに戻す
             if (nSceneIndex >= SceneManager.sceneCountInBuildSettings)

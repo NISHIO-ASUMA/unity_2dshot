@@ -63,6 +63,12 @@ public class EnemyController : MonoBehaviour
     public GameObject hitParticlePrefab;     // 2DパーティクルのPrefab
     private object rigidBody;
 
+
+    //*********************************************
+    // アイテムプレハブ
+    //*********************************************
+    public GameObject ItemPrefab; // アイテムのプレハブ
+
     // Start is called before the first frame update
     void Start()
     {
@@ -255,7 +261,7 @@ public class EnemyController : MonoBehaviour
         // プレイヤーの弾タグに当たったら
         if (collision.CompareTag("PlayerBullet"))
         {
-            // ダメージ処理（今回は1と仮定）
+            // 敵の体力を減らす
             EnemyLife--;
 
             // 弾を消す
@@ -264,6 +270,13 @@ public class EnemyController : MonoBehaviour
             // 体力が0以下なら自身を削除
             if (EnemyLife <= 0)
             {
+                // アイテムを生成する
+                if (ItemPrefab != null)
+                {
+                    // 敵を倒した位置に出現する
+                    Instantiate(ItemPrefab, transform.position, Quaternion.identity);
+                }
+
                 // 敵を消去
                 Destroy(gameObject);
             }

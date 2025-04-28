@@ -109,6 +109,7 @@ MonoBehaviour:
   chaseSpeed: 3
   warpInterval: 3
   hitParticlePrefab: {fileID: 2077029929966733842, guid: d0281397000da194aa6fcf299c4cb7de, type: 3}
+  ItemPrefab: {fileID: 2904924100603045440, guid: e0533b2e5e2fca74897305eb3a8dddcc, type: 3}
 --- !u!61 &8506136902109455755
 BoxCollider2D:
   m_ObjectHideFlags: 0

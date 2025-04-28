@@ -1,9 +1,25 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI; 
 
 public class PlayerController : MonoBehaviour
 {// プレイヤー制御スクリプト
+
+    //****************************
+    // プレイヤーの状態
+    //****************************
+    private enum PlayerState
+    {
+        Normal,    // 通常
+        Damage,    // ダメージを受けた
+        Invincible // 無敵
+    }
+
+    // 変数
+    private PlayerState currentState = PlayerState.Normal;  // 初期状態
+    private float invincibleTime = 1f;                      // 無敵時間（秒）
+    private float invincibleTimer = 0f;                     // 無敵タイマー
 
     //***************************
     // メンバ変数
@@ -26,9 +42,25 @@ public class PlayerController : MonoBehaviour
     public AudioClip shotSE;           // 発射時のSE
     private AudioSource audioSource;   // AudioSourceの取得用
 
+    //***************************
+    // 点滅に関連するメンバ変数
+    //***************************
+    private SpriteRenderer spriteRenderer;    // スプライトレンダラー
+    private bool isBlinking = false;          // 点滅中かどうか
+    private float blinkTime = 0.2f;           // 点滅間隔
+    private float blinkDuration = 1f;         // 点滅時間の継続時間
+
+    public int currentHealth;                 // 体力減少値
+
+
     void Start()
     {
+        currentHealth = playerLife; // ゲーム開始時に体力を最大に設定
+
         rb = GetComponent<Rigidbody2D>(); // Rigidbody2D を取得
+
+        spriteRenderer = GetComponent<SpriteRenderer>(); // スプライトレンダラーを取得
+
         bulletPoint = transform.Find("BulletPoint").localPosition;  // 弾の位置設定
 
         audioSource = GetComponent<AudioSource>(); // AudioSourceを取得する
@@ -36,37 +68,124 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        // 常に操作可能にするため、状態に関わらず移動処理
+        HandleMovement();
+
+        // 弾を発射する処理（常に操作可能）
+        if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.JoystickButton0))
+        {
+            // 弾発射関数
+            ShootBullet();
+        }
+
+        // 無敵状態の処理
+        if (currentState == PlayerState.Invincible)
+        {
+            invincibleTimer -= Time.deltaTime;
+            if (invincibleTimer <= 0)
+            {
+                currentState = PlayerState.Normal;  // 無敵時間が終わったら通常状態
+            }
+        }
+    }
+
+    void FixedUpdate()
+    {
+        if (moveInput != Vector2.zero)
+        {
+            Vector2 newPosition = rb.position + moveInput * fSpeed * Time.fixedDeltaTime;
+
+            // 背景の黄色い枠の範囲に合わせて調整
+            float minX = -1.3f; // 左端
+            float maxX = 1.3f; // 右端
+            float minY = -2.5f; // 下端
+            float maxY = 3.0f; // 上端
+
+            // ワールド座標で制限
+            newPosition.x = Mathf.Clamp(newPosition.x, minX, maxX);
+            newPosition.y = Mathf.Clamp(newPosition.y, minY, maxY);
+
+            rb.MovePosition(newPosition);
+        }
+    }
+
+
+    public void HitDamage(int damage)
+    {
+        if (currentState != PlayerState.Invincible) // 無敵状態ではダメージを受けない
+        {
+            Debug.Log("ダメージ受けた: " + damage);  // ダメージ値をログに出力
+
+            // 体力減少
+            currentHealth -= damage;
+
+            if (currentHealth <= 0)
+            {
+                // 0以下になったら
+                currentHealth = 0;
+
+                // デバッグログを出力
+                Debug.Log("プレイヤー死亡！");
+
+                // シーン遷移でリザルトへ
+                SceneController sceneController = FindObjectOfType<SceneController>();
+
+                if (sceneController != null)
+                {
+                    sceneController.scenChange(3);
+                }
+            }
+            else
+            {
+                // ダメージを受けたら無敵状態に入る
+                currentState = PlayerState.Invincible;
+                invincibleTimer = invincibleTime;
+
+                // 点滅処理を開始
+                StartCoroutine(BlinkEffect());
+            }
+        }
+
+    }
+
+    // 点滅処理
+    private IEnumerator BlinkEffect()
+    {
+        // フラグを有効化
+        isBlinking = true;
+        float elapsedTime = 0f;
+
+        // 点滅時間中繰り返し処理
+        while (elapsedTime < blinkDuration)
+        {
+            // スプライトの表示/非表示を切り替え
+            spriteRenderer.enabled = !spriteRenderer.enabled;
+
+            // 次の点滅まで待つ
+            elapsedTime += blinkTime;
+            yield return new WaitForSeconds(blinkTime);
+        }
+
+        // 点滅終了後、確実に表示状態に戻す
+        spriteRenderer.enabled = true;
+        isBlinking = false;
+    }
+
+    // 移動処理
+    private void HandleMovement()
+    {
         if (playerLife > 0)
         {
             // 入力取得（左右・上下）
             float moveX = 0.0f;
             float moveY = 0.0f;
 
-            if (Input.GetKey(KeyCode.W))
-            {
-                // Wキーが押された
-                moveY = fSpeed;
-            }
+            if (Input.GetKey(KeyCode.W)) moveY = fSpeed;
+            if (Input.GetKey(KeyCode.S)) moveY = -fSpeed;
+            if (Input.GetKey(KeyCode.A)) moveX = -fSpeed;
+            if (Input.GetKey(KeyCode.D)) moveX = fSpeed;
 
-            if (Input.GetKey(KeyCode.S))
-            {
-                // Sキー
-                moveY = -fSpeed;
-            }
-
-            if (Input.GetKey(KeyCode.A))
-            {
-                // Aキー
-                moveX = -fSpeed;
-            }
-
-            if (Input.GetKey(KeyCode.D))
-            {
-                // Dキー
-                moveX = fSpeed;
-            }
-
-            // ★ ゲームパッド移動入力（左スティック）
+            // ゲームパッド移動入力（左スティック）
             moveX += Input.GetAxis("Horizontal");
             moveY += Input.GetAxis("Vertical");
 
@@ -98,6 +217,7 @@ public class PlayerController : MonoBehaviour
                 if (currentAngle >= 360f) currentAngle = 0f;
                 transform.rotation = Quaternion.Euler(0, 0, currentAngle);
             }
+
             // Space or Aボタンを押したとき
             if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.JoystickButton0))
             {
@@ -112,8 +232,7 @@ public class PlayerController : MonoBehaviour
 
                 // SE再生
                 if (shotSE != null && audioSource != null)
-                {// 弾発射SEがある かつ オーディオソースが取得できていたら
-
+                {
                     // SE再生
                     audioSource.PlayOneShot(shotSE);
                 }
@@ -128,45 +247,22 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void FixedUpdate()
+    // 弾発射処理（常に操作可能）
+    void ShootBullet()
     {
-        if (moveInput != Vector2.zero)
+        // バレットポイントを検出
+        Transform bulletPoint = transform.Find("BulletPoint");
+
+        // 弾の生成
+        GameObject bullet = Instantiate(BulletObj, bulletPoint.position, bulletPoint.rotation);
+
+        // 方向をBulletControllerに伝える
+        bullet.GetComponent<BulletController>().SetDirection(bulletPoint.up);
+
+        // SE再生
+        if (shotSE != null && audioSource != null)
         {
-            Vector2 newPosition = rb.position + moveInput * fSpeed * Time.fixedDeltaTime;
-
-            // 背景の黄色い枠の範囲に合わせて調整
-            float minX = -1.3f; // 左端
-            float maxX = 1.3f; // 右端
-            float minY = -2.5f; // 下端
-            float maxY = 3.0f; // 上端
-
-            // ワールド座標で制限
-            newPosition.x = Mathf.Clamp(newPosition.x, minX, maxX);
-            newPosition.y = Mathf.Clamp(newPosition.y, minY, maxY);
-
-            rb.MovePosition(newPosition);
-        }
-    }
-
-
-    public void HitDamage(int damage)
-    {
-        // ダメージの数値だけ体力を減らす
-        playerLife -= damage;
-
-        if (playerLife <= 0)
-        {// 体力が0以下
-            Debug.Log("プレイヤー死亡！");
-
-            // シーン遷移でリザルトへ
-            SceneController sceneController = FindObjectOfType<SceneController>();
-
-            if (sceneController != null)
-            {
-                // シーンのリザルト番号を設定し,画面遷移
-                sceneController.scenChange(3);
-            }
-
+            audioSource.PlayOneShot(shotSE);
         }
     }
 }

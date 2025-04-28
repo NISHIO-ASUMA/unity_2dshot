@@ -20,7 +20,6 @@ public class PauseManager : MonoBehaviour
     public AudioClip enterSe;    // メニュー決定時SE
     private AudioSource audioSource; // オーディオソース
 
-    private float inputDelay = 0.2f; // 入力を受け付ける間隔（秒）
     private float inputTimer = 0f;   // タイマー
 
     // Start is called before the first frame update
@@ -54,6 +53,7 @@ public class PauseManager : MonoBehaviour
                 RestartGame();
             }
         }
+
         // フラグがtrueなら
         if (isPaused)
         {
