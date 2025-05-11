@@ -45,13 +45,27 @@ public class WaveManager : MonoBehaviour
         if (waveIndex >= waves.Count)
         {
             Debug.Log("すべてのウェーブ終了！");
+
+            // Coroutineを使って遷移処理を遅延させる
+            StartCoroutine(DelayedSceneChange());
+
+            // 関数の処理終了
             return;
         }
 
-        foreach (var enemyData in waves[waveIndex].enemies)
+        // ウェーブカウントが上限に達していない場合に敵を出現させる
+        if (waveIndex < waves.Count)  // ここで上限チェック
         {
-            GameObject enemy = Instantiate(enemyData.enemyPrefab, enemyData.spawnPosition, Quaternion.identity);
-            aliveEnemies.Add(enemy);
+            foreach (var enemyData in waves[waveIndex].enemies)
+            {
+                // 敵出現
+                GameObject enemy = Instantiate(enemyData.enemyPrefab, enemyData.spawnPosition, Quaternion.identity);
+                aliveEnemies.Add(enemy);
+            }
+        }
+        else
+        {
+            Debug.Log("ウェーブカウントが上限に達したため、敵は出現しません。");
         }
     }
 
@@ -59,5 +73,21 @@ public class WaveManager : MonoBehaviour
     {
         currentWave++;
         StartWave(currentWave);
+    }
+
+    // 1秒待ってからシーンを遷移するCoroutine
+    IEnumerator DelayedSceneChange()
+    {
+        yield return new WaitForSeconds(1f);  // 1秒待機
+        SceneController controller = FindObjectOfType<SceneController>();
+
+        if (controller != null)
+        {
+            controller.scenChange(3); // 例：ResultシーンのBuildIndexが3なら
+        }
+        else
+        {
+            Debug.LogWarning("SceneController が見つかりません！");
+        }
     }
 }

@@ -11,51 +11,42 @@ public class ScoreManager : MonoBehaviour
     //*************************************
     public static ScoreManager Instance; // シングルトン
     public int AllScore = 0;             // 現在のスコア
-    public TMP_Text scoreText;           // テキストメッシュで作成
-
+    public TMP_Text scoreText;           // スコア表示用TextMeshPro
 
     void Awake()
     {
-        // NULLだったら
+        // シングルトン化
         if (Instance == null)
-        {// シングルトン化する
+        {
             Instance = this;
         }
         else
         {
-            // オブジェクトを消去
             Destroy(gameObject);
         }
     }
 
-    // Start is called before the first frame update
     void Start()
     {
-        // スコアUIを更新
+        // 初期スコア表示
         UpdateScoreText();
     }
-
 
     public void AddScore(int addValue)
     {
         // スコア加算
         AllScore += addValue;
 
-        // テキスト更新
+        // 表示更新
         UpdateScoreText();
     }
 
+    // スコアテキスト更新
     private void UpdateScoreText()
     {
         if (scoreText != null)
         {
-            // スコアテキストに変更を加える
-            scoreText.text = "" + AllScore.ToString();
+            scoreText.text = AllScore.ToString();
         }
-    }
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

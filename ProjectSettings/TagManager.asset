@@ -23,6 +23,7 @@ TagManager:
   - PlayerBullet
   - Spawnenemy
   - Point
+  - TitleKey
   layers:
   - Default
   - TransparentFX

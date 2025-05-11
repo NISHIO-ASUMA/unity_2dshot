@@ -166,7 +166,7 @@ public class PlayerController : MonoBehaviour
             yield return new WaitForSeconds(blinkTime);
         }
 
-        // 点滅終了後、確実に表示状態に戻す
+        // 点滅終了後、表示状態に戻す
         spriteRenderer.enabled = true;
         isBlinking = false;
     }
