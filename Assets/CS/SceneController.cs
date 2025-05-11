@@ -37,8 +37,8 @@ public class SceneController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // エンターキーが押されたら
-        if (Input.GetKey(KeyCode.Return))
+        // エンターキーが押されたら or Aボタン
+        if (Input.GetKey(KeyCode.Return) || Input.GetKeyDown(KeyCode.JoystickButton0))
         {
             // 現在のシーン番号に1を足した数字を保持する
             int nSceneIndex = SceneManager.GetActiveScene().buildIndex + 1; // 現在のアクティブなシーンを取得,加算

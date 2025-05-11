@@ -141,19 +141,25 @@ public class PauseManager : MonoBehaviour
         // インデックス番号で管理
         switch (currentIndex)
         {
-            case 0: // リトライ選択時
+            case 0: // Contine選択時
+                RestartGame();
+                break;
+
+            case 1: // リトライ選択時
                 Time.timeScale = 1f;
                 SceneManager.LoadScene(SceneManager.GetActiveScene().name); // ゲームシーンをを再開
                 break;
 
-            case 1: // クイット選択時
-                Time.timeScale = 1f;
-                SceneManager.LoadScene("TitleScene"); // タイトルシーンに遷移
-                break;
+            case 2: // quit選択時
+                // タイトルシーンに遷移
+                // SceneControllerを使ってタイトルに遷移する
+                SceneController sceneController = FindObjectOfType<SceneController>();
 
-            case 2: // コンティニュー選択時
-                // ゲーム継続
-                RestartGame();
+                if (sceneController != null)
+                {
+                    sceneController.scenChange(0); // シーンインデックス 0（タイトルシーン）
+                }
+
                 break;
         }
     }

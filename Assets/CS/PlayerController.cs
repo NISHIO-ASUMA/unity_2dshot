@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI; 
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {// プレイヤー制御スクリプト
@@ -52,6 +52,7 @@ public class PlayerController : MonoBehaviour
 
     public int currentHealth;                 // 体力減少値
 
+    // スタート関数
 
     void Start()
     {
@@ -72,7 +73,7 @@ public class PlayerController : MonoBehaviour
         HandleMovement();
 
         // 弾を発射する処理（常に操作可能）
-        if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.JoystickButton0))
+        if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.JoystickButton1))
         {
             // 弾発射関数
             ShootBullet();
@@ -180,6 +181,8 @@ public class PlayerController : MonoBehaviour
             float moveX = 0.0f;
             float moveY = 0.0f;
 
+            // キー操作
+            // TODO : ここにパッドの十字キーでの操作を追加
             if (Input.GetKey(KeyCode.W)) moveY = fSpeed;
             if (Input.GetKey(KeyCode.S)) moveY = -fSpeed;
             if (Input.GetKey(KeyCode.A)) moveX = -fSpeed;
@@ -188,6 +191,7 @@ public class PlayerController : MonoBehaviour
             // ゲームパッド移動入力（左スティック）
             moveX += Input.GetAxis("Horizontal");
             moveY += Input.GetAxis("Vertical");
+
 
             // キーボード
             if (Input.GetKeyDown(KeyCode.E))
@@ -218,8 +222,8 @@ public class PlayerController : MonoBehaviour
                 transform.rotation = Quaternion.Euler(0, 0, currentAngle);
             }
 
-            // Space or Aボタンを押したとき
-            if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.JoystickButton0))
+            // Space or Bボタンを押したとき
+            if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.JoystickButton1))
             {
                 // BulletPointのTransform取得
                 Transform bulletPoint = transform.Find("BulletPoint");
@@ -263,6 +267,20 @@ public class PlayerController : MonoBehaviour
         if (shotSE != null && audioSource != null)
         {
             audioSource.PlayOneShot(shotSE);
+        }
+    }
+
+    // 敵とプレイヤーの当たり判定
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        // 敵に共通してる部分の名前でとる
+        if (other.tag.StartsWith("Enemy"))
+        {
+            // デバッグログ表示
+            Debug.Log("敵に当たった!");
+
+            // 共通ダメージ処理
+            HitDamage(1);
         }
     }
 }

@@ -20,12 +20,14 @@ public class ItemController : MonoBehaviour
     // 使用メンバ変数
     //*************************************
     public float fItemSpeed = 1.0f;         // アイテムの移動速度
-    public float stopRange = 0.5f;           // 中央に近づいたら停止する範囲
-    public int addScore = 0;                // スコア加算量
+    public float stopRange = 0.5f;          // 中央に近づいたら停止する範囲
+    private int addScore = 0;               // スコア加算量
 
     private bool isMoveLeft = false;        // 左に行くフラグ
     private bool isMoveRight = false;       // 右に行くフラグ
     private bool isStopState = false;       // 移動終わったら停止するフラグ
+    private int nLife = 1;
+    private bool isGetItem = false;
 
     private Vector3 startPosition;     // 初期位置
     public ItemType itemType; // 種類を保存
@@ -89,7 +91,6 @@ public class ItemController : MonoBehaviour
             // 停止状態を有効化
             isStopState = true;
         }
-
     }
 
     // TODO : ここの下にプレイヤーとの当たり判定関数の追加
@@ -97,6 +98,9 @@ public class ItemController : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
+            // 体力を減らす
+            nLife--;
+
             // オーディオソースが有効 かつ アイテムSEが有効
             if (AudioSource != null && ItemSE != null)
             {
@@ -104,46 +108,58 @@ public class ItemController : MonoBehaviour
                 AudioSource.PlayOneShot(ItemSE);
             }
 
-            // スコア加算
-            AddScoreByItemType(itemType);
+            // 体力が0以下 かつ フラグがfalse
+            if (nLife <= 0)
+            {
+                if (!isGetItem)
+                {
+                    switch (gameObject.tag)
+                    {
+                        // 種類に応じて加算量を決める
+                        case "Item000":
+                            ScoreManager.Instance.AddScore(1000); // 1種類目
+                            break;
 
-            // 対象のアイテムを消去
-            Destroy(gameObject);
+                        case "Item001":
+                            ScoreManager.Instance.AddScore(1000); // 2種類目
+                            break;
+
+                        case "Item002":
+                            ScoreManager.Instance.AddScore(4000); // 3種類目
+                            break;
+
+                        case "Item003":
+                            ScoreManager.Instance.AddScore(5000); // 4種類目
+                            break;
+
+                        case "Item004":
+                            ScoreManager.Instance.AddScore(10000); // 5種類目
+                            break;
+
+                        case "Item005":
+                            ScoreManager.Instance.AddScore(20000); // 6種類目
+                            break;
+
+                        default:
+                            ScoreManager.Instance.AddScore(0);
+                            break;
+                    }
+
+                    // フラグ有効化
+                    isGetItem = true;
+                }
+                // 対象のアイテムを消去
+                Destroy(gameObject);
+            }
+
         }
     }
 
-    // 種類に応じたスコアの追加処理
+    // タグに応じたスコアの追加処理
     void AddScoreByItemType(ItemType type)
     {
-        int AddScore = 0;
-
-        switch (type)
-        {
-
-            case ItemType.ITEMTYPE_0:
-                AddScore += addScore;
-                break;
-            case ItemType.ITEMTYPE_1:
-                AddScore += addScore;
-                break;
-            case ItemType.ITEMTYPE_2:
-                AddScore += addScore;
-                break;
-            case ItemType.ITEMTYPE_3:
-                AddScore += addScore;
-                break;
-            case ItemType.ITEMTYPE_4:
-                AddScore += addScore;
-                break;
-            case ItemType.ITEMTYPE_5:
-                AddScore += addScore;
-                break;
-        }
 
         // 確認ログ
         Debug.Log($"アイテム取得！スコア +{addScore}");
-
-        // ここでゲーム全体のスコアに加算する関数を呼び出すとかできる
-        ScoreManager.Instance.AddScore(addScore);
     }
 }

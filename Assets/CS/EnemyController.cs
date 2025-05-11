@@ -15,7 +15,6 @@ public class EnemyController : MonoBehaviour
     private Vector3 startPosition;     // 初期位置
     private Vector3 moveDirection;     // 移動方向
 
-
     //*********************************
     // 敵1で使用
     //*********************************
@@ -27,10 +26,6 @@ public class EnemyController : MonoBehaviour
     //***********************
     private bool isBouncing = false;   // 横壁反射のフラグ
     private bool isCollisionUp = false;// 上壁反射のフラグ
-
-    //**********************************************
-    // 画面内の一定の箇所をループ移動するフラグ関係
-    //**********************************************
 
 
     //*********************************************
@@ -63,11 +58,12 @@ public class EnemyController : MonoBehaviour
     public GameObject hitParticlePrefab;     // 2DパーティクルのPrefab
     private object rigidBody;
 
-
     //*********************************************
     // アイテムプレハブ
     //*********************************************
     public GameObject ItemPrefab; // アイテムのプレハブ
+
+    private bool GetScore = false;
 
     // Start is called before the first frame update
     void Start()
@@ -275,6 +271,45 @@ public class EnemyController : MonoBehaviour
                 {
                     // 敵を倒した位置に出現する
                     Instantiate(ItemPrefab, transform.position, Quaternion.identity);
+                }
+
+                if (!GetScore)
+                {
+                    // 敵のタグに応じてスコアを加算する
+                    switch (gameObject.tag)
+                    {
+                        case "Enemy01":
+                            ScoreManager.Instance.AddScore(10000); // Enemy01
+                            break;
+
+                        case "Enemy02":
+                            ScoreManager.Instance.AddScore(20000); // Enemy02
+                            break;
+
+                        case "Enemy03":
+                            ScoreManager.Instance.AddScore(30000); // Enemy03
+                            break;
+
+                        case "Enemy04":
+                            ScoreManager.Instance.AddScore(40000); // Enemy04
+                            break;
+
+                        case "Enemy05":
+                            ScoreManager.Instance.AddScore(50000); // Enemy05
+                            break;
+
+                        case "Enemy06":
+                            ScoreManager.Instance.AddScore(50000); // Enemy06
+                            break;
+
+                        default:
+                            // 対策で0代入
+                            ScoreManager.Instance.AddScore(0); // 初期値
+                            break;
+                    }
+
+                    // フラグを立てて、スコア加算を1回だけ実行
+                    GetScore = true;
                 }
 
                 // 敵を消去
