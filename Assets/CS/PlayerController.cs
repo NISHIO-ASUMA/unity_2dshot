@@ -128,13 +128,8 @@ public class PlayerController : MonoBehaviour
                 // デバッグログを出力
                 Debug.Log("プレイヤー死亡！");
 
-                // シーン遷移でリザルトへ
-                SceneController sceneController = FindObjectOfType<SceneController>();
-
-                if (sceneController != null)
-                {
-                    sceneController.scenChange(3);
-                }
+                // 1秒後にシーン遷移
+                StartCoroutine(DelayedSceneChange());
             }
             else
             {
@@ -281,6 +276,18 @@ public class PlayerController : MonoBehaviour
 
             // 共通ダメージ処理
             HitDamage(1);
+        }
+    }
+
+    // 1秒後に画面遷移
+    private IEnumerator DelayedSceneChange()
+    {
+        yield return new WaitForSeconds(1.0f); // 1秒待つ
+
+        SceneController sceneController = FindObjectOfType<SceneController>();
+        if (sceneController != null)
+        {
+            sceneController.scenChange(3); // 3番のシーンへ遷移
         }
     }
 }

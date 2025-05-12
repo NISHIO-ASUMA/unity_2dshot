@@ -56,6 +56,7 @@ public class RankingScoreManager : MonoBehaviour
     void LoadScores()
     {
         scoreRanking.Clear();
+
         for (int i = 0; i < 5; i++)
         {
             if (PlayerPrefs.HasKey("RankingScore" + i))

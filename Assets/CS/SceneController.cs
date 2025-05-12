@@ -23,7 +23,7 @@ public class SceneController : MonoBehaviour
             FadeCanvas = Instantiate(fade);
         }
 
-        // すぐ代入できてるので、遅延呼び出しも不要
+        // タグ検出
         if (FadeCanvas == null)
         {
             // 念のため

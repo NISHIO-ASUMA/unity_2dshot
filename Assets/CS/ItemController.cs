@@ -26,7 +26,7 @@ public class ItemController : MonoBehaviour
     private bool isMoveLeft = false;        // 左に行くフラグ
     private bool isMoveRight = false;       // 右に行くフラグ
     private bool isStopState = false;       // 移動終わったら停止するフラグ
-    private int nLife = 1;
+    public int nLife = 1;
     private bool isGetItem = false;
 
     private Vector3 startPosition;     // 初期位置
@@ -56,7 +56,7 @@ public class ItemController : MonoBehaviour
         }
 
         // オーディオソースを取得
-        AudioSource = GetComponent<AudioSource>(); // AudioSourceを取得する
+        AudioSource = GetComponent<AudioSource>(); 
 
     }
 
@@ -98,67 +98,63 @@ public class ItemController : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            // 体力を減らす
-            nLife--;
-
             // オーディオソースが有効 かつ アイテムSEが有効
             if (AudioSource != null && ItemSE != null)
             {
                 // サウンド再生
-                AudioSource.PlayOneShot(ItemSE);
+                SEPlayer.PlaySE(ItemSE,transform.position);
             }
+
+            // 体力を減らす
+            nLife--;
 
             // 体力が0以下 かつ フラグがfalse
-            if (nLife <= 0)
+            if (nLife <= 0 || !isGetItem)
             {
-                if (!isGetItem)
+                switch (gameObject.tag)
                 {
-                    switch (gameObject.tag)
-                    {
-                        // 種類に応じて加算量を決める
-                        case "Item000":
-                            ScoreManager.Instance.AddScore(1000); // 1種類目
-                            break;
+                // 種類に応じて加算量を決める
+                case "Item000":
+                    ScoreManager.Instance.AddScore(1000); // 1種類目
+                    break;
 
-                        case "Item001":
-                            ScoreManager.Instance.AddScore(1000); // 2種類目
-                            break;
+                case "Item001":
+                    ScoreManager.Instance.AddScore(1000); // 2種類目
+                    break;
 
-                        case "Item002":
-                            ScoreManager.Instance.AddScore(4000); // 3種類目
-                            break;
+                case "Item002":
+                    ScoreManager.Instance.AddScore(4000); // 3種類目
+                    break;
 
-                        case "Item003":
-                            ScoreManager.Instance.AddScore(5000); // 4種類目
-                            break;
+                case "Item003":
+                    ScoreManager.Instance.AddScore(5000); // 4種類目
+                    break;
 
-                        case "Item004":
-                            ScoreManager.Instance.AddScore(10000); // 5種類目
-                            break;
+                case "Item004":
+                    ScoreManager.Instance.AddScore(10000); // 5種類目
+                    break;
 
-                        case "Item005":
-                            ScoreManager.Instance.AddScore(20000); // 6種類目
-                            break;
+                case "Item005":
+                    ScoreManager.Instance.AddScore(20000); // 6種類目
+                    break;
 
-                        default:
-                            ScoreManager.Instance.AddScore(0);
-                            break;
-                    }
-
-                    // フラグ有効化
-                    isGetItem = true;
+                default:
+                    ScoreManager.Instance.AddScore(0);
+                    break;
                 }
-                // 対象のアイテムを消去
+
+                // フラグ有効化
+                isGetItem = true;
+                
+                //  音が鳴り終わったら削除する
                 Destroy(gameObject);
             }
-
         }
     }
 
     // タグに応じたスコアの追加処理
     void AddScoreByItemType(ItemType type)
     {
-
         // 確認ログ
         Debug.Log($"アイテム取得！スコア +{addScore}");
     }

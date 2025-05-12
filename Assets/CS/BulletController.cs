@@ -35,16 +35,22 @@ public class BulletController : MonoBehaviour
     // 更新関数
     void Update()
     {
-        // 座標に現在の速度を加算
-        transform.position += moveDirection * MoveSpeed * Time.deltaTime;
+        // プレイヤーの取得
+        PlayerController player = playerObj.GetComponent<PlayerController>();
 
-        // 距離を計算する
-        float distance = (playerObj.transform.position - transform.position).sqrMagnitude;
+        if (player != null && player.playerLife > 0)
+        {
+            // 座標に現在の速度を加算
+            transform.position += moveDirection * MoveSpeed * Time.deltaTime;
 
-        if (distance > deleteDistance)
-        {// 画面外に行ったら
-            // 弾を消す
-            Destroy(gameObject);
+            // 距離を計算する
+            float distance = (playerObj.transform.position - transform.position).sqrMagnitude;
+
+            if (distance > deleteDistance)
+            {// 画面外に行ったら
+             // 弾を消す
+                Destroy(gameObject);
+            }
         }
     }
 

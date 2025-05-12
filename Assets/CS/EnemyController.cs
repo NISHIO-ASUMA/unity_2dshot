@@ -22,11 +22,12 @@ public class EnemyController : MonoBehaviour
     public float fireInterval_1 = 1.0f; // Enemy01用の発射間隔
 
     //***********************
-    // 敵の動作フラグ関係
+    // 敵2の動作フラグ関係
     //***********************
     private bool isBouncing = false;   // 横壁反射のフラグ
     private bool isCollisionUp = false;// 上壁反射のフラグ
-
+    private float fireTimer_2 = 0f;
+    public float fireInterval_2 = 1.0f; // Enemy02用の発射間隔
 
     //*********************************************
     // 敵から射出されるバレット
@@ -34,6 +35,12 @@ public class EnemyController : MonoBehaviour
     public GameObject bulletPrefab;     // バレットオブジェクトを取得
     public float fireInterval = 1.0f;   // インターバル
     private float fireTimer = 0f;
+
+    //*********************************************
+    // 時計回り巡回
+    //*********************************************
+    private int nPointIdx = 0;
+    private List<Vector3> Enemy03Point = new List<Vector3>(); // 巡回ポイント
 
     //********************************************
     // 追尾用の変数
@@ -85,6 +92,14 @@ public class EnemyController : MonoBehaviour
         else if (CompareTag("Enemy03"))
         {// タグがEnemy03
 
+            // 時計回りに巡回する4点（左上→右上→右下→左下）
+            Enemy03Point.Add(Camera.main.ViewportToWorldPoint(new Vector3(0.2f, 0.8f, 10))); // 左上
+            Enemy03Point.Add(Camera.main.ViewportToWorldPoint(new Vector3(0.8f, 0.8f, 10))); // 右上
+            Enemy03Point.Add(Camera.main.ViewportToWorldPoint(new Vector3(0.8f, 0.2f, 10))); // 右下
+            Enemy03Point.Add(Camera.main.ViewportToWorldPoint(new Vector3(0.2f, 0.2f, 10))); // 左下
+
+            transform.position = Enemy03Point[0]; // 初期位置を左上に
+            nPointIdx = 1; // 次に向かうのは右上
         }
         else if (CompareTag("Enemy05"))
         {// タグがEnemy05            
@@ -126,7 +141,6 @@ public class EnemyController : MonoBehaviour
             {
                 moveDirection *= -1; // 方向反転
             }
-
 
             // ======= 弾発射処理をタイマー制御する =======
             fireTimer_1 += Time.deltaTime; // タイマー進める
@@ -174,13 +188,56 @@ public class EnemyController : MonoBehaviour
             {
                 moveDirection *= -1; // 方向反転
             }
+
+            // ======= 弾発射処理をタイマー制御する =======
+            fireTimer_2 += Time.deltaTime; // タイマー進める
+
+            if (fireTimer_2 >= fireInterval_2)
+            {
+                fireTimer_2 = 0f; // タイマーリセット
+
+                // 弾の方向を決める
+                Vector3 bulletDir = Vector3.left;
+
+                if (viewPos.x < 0.5f)
+                {
+                    // 弾を右に発射
+                    bulletDir = Vector3.right;
+                }
+                else
+                {
+                    // 弾を左に発射
+                    bulletDir = Vector3.left;
+                }
+
+                // 弾のオブジェクトを生成
+                GameObject bullet = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
+
+                // BulletController.csからコンポーネントを取得
+                BulletController bc = bullet.GetComponent<BulletController>();
+
+                if (bc != null)
+                {
+                    bc.SetDirection(bulletDir);
+                }
+
+            }
         }
         else if (CompareTag("Enemy03"))
         {// タグがEnemy03
 
             // ポイント巡回
+            Vector3 targetPoint = Enemy03Point[nPointIdx];
+
+            transform.position = Vector3.MoveTowards(transform.position, targetPoint, fEnemyMove * Time.deltaTime);
+
+            if (Vector3.Distance(transform.position, targetPoint) < 0.1f)
+            {
+                nPointIdx = (nPointIdx + 1) % Enemy03Point.Count;
+            }
+
         }
-        else if(CompareTag("Enemy04"))
+        else if (CompareTag("Enemy04"))
         {// タグがEnemy04だったら
 
             // タイマーを加算
@@ -229,12 +286,12 @@ public class EnemyController : MonoBehaviour
         }
         else if (CompareTag("Enemy06") && patrolPoints.Count >= 3)
         {// タグがEnemy06 かつ ポイントのカウントが3より大きくなったら
-            // タイマーを加算
+         // タイマーを加算
             warpTimer += Time.deltaTime;
 
             if (warpTimer >= warpInterval)
             {// インターバルより大きくなったら
-                // 初期値に戻す
+             // 初期値に戻す
                 warpTimer = 0f;
 
                 // ワープ実行
@@ -250,7 +307,7 @@ public class EnemyController : MonoBehaviour
             transform.position = startPosition + moveDirection * pingPong;
         }
 
-    }
+     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
