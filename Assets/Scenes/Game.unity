@@ -170,12 +170,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
+  m_MatchWidthOrHeight: 0.5
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
@@ -432,8 +432,6 @@ MonoBehaviour:
       spawnPosition: {x: 6, y: 0, z: 0}
     - enemyPrefab: {fileID: 5266472300494603028, guid: ab956490280c92e49954984dd4a0e6b0, type: 3}
       spawnPosition: {x: -6, y: 0, z: 0}
-    - enemyPrefab: {fileID: 2655041415644549604, guid: 845d27c4686597a43b3d2cb109eb1b84, type: 3}
-      spawnPosition: {x: -6, y: 6, z: 0}
   - enemies:
     - enemyPrefab: {fileID: 7554852888282837771, guid: fa90c6a1d38082449a13dfde3eaf82f1, type: 3}
       spawnPosition: {x: -3, y: 3, z: 0}
@@ -449,8 +447,45 @@ MonoBehaviour:
       spawnPosition: {x: -6, y: -3, z: 0}
     - enemyPrefab: {fileID: 5978145840537847562, guid: 86a281192242ec541bbb65e2ecd155c5, type: 3}
       spawnPosition: {x: -6, y: 0, z: 0}
-    - enemyPrefab: {fileID: 9151827936853752053, guid: 57a0a99873fdde546a9f37e96708f4f4, type: 3}
+  - enemies:
+    - enemyPrefab: {fileID: 7554852888282837771, guid: fa90c6a1d38082449a13dfde3eaf82f1, type: 3}
+      spawnPosition: {x: -2, y: 3, z: 0}
+    - enemyPrefab: {fileID: 7554852888282837771, guid: fa90c6a1d38082449a13dfde3eaf82f1, type: 3}
+      spawnPosition: {x: 2, y: -3, z: 0}
+    - enemyPrefab: {fileID: 7554852888282837771, guid: fa90c6a1d38082449a13dfde3eaf82f1, type: 3}
+      spawnPosition: {x: -1, y: 2, z: 0}
+    - enemyPrefab: {fileID: 2655041415644549604, guid: 845d27c4686597a43b3d2cb109eb1b84, type: 3}
+      spawnPosition: {x: 1, y: -2, z: 0}
+    - enemyPrefab: {fileID: 2655041415644549604, guid: 845d27c4686597a43b3d2cb109eb1b84, type: 3}
+      spawnPosition: {x: 6, y: 4, z: 0}
+    - enemyPrefab: {fileID: 2655041415644549604, guid: 845d27c4686597a43b3d2cb109eb1b84, type: 3}
+      spawnPosition: {x: 8, y: -4, z: 0}
+    - enemyPrefab: {fileID: 6011739230195900482, guid: 1da9d7bd22e05e5479515d3dca284d1f, type: 3}
+      spawnPosition: {x: -8, y: 0.5, z: 0}
+    - enemyPrefab: {fileID: 5978145840537847562, guid: 86a281192242ec541bbb65e2ecd155c5, type: 3}
       spawnPosition: {x: -6, y: 0, z: 0}
+  - enemies:
+    - enemyPrefab: {fileID: 7554852888282837771, guid: fa90c6a1d38082449a13dfde3eaf82f1, type: 3}
+      spawnPosition: {x: -2, y: 3, z: 0}
+    - enemyPrefab: {fileID: 7554852888282837771, guid: fa90c6a1d38082449a13dfde3eaf82f1, type: 3}
+      spawnPosition: {x: 2, y: -3, z: 0}
+    - enemyPrefab: {fileID: 5978145840537847562, guid: 86a281192242ec541bbb65e2ecd155c5, type: 3}
+      spawnPosition: {x: -1, y: 2, z: 0}
+    - enemyPrefab: {fileID: 9151827936853752053, guid: 57a0a99873fdde546a9f37e96708f4f4, type: 3}
+      spawnPosition: {x: -4, y: 2.5, z: 0}
+    - enemyPrefab: {fileID: 9151827936853752053, guid: 57a0a99873fdde546a9f37e96708f4f4, type: 3}
+      spawnPosition: {x: 4, y: -2.5, z: 0}
+  - enemies:
+    - enemyPrefab: {fileID: 2655041415644549604, guid: 845d27c4686597a43b3d2cb109eb1b84, type: 3}
+      spawnPosition: {x: -2, y: 5, z: 0}
+    - enemyPrefab: {fileID: 2655041415644549604, guid: 845d27c4686597a43b3d2cb109eb1b84, type: 3}
+      spawnPosition: {x: 4, y: -3, z: 0}
+    - enemyPrefab: {fileID: 2655041415644549604, guid: 845d27c4686597a43b3d2cb109eb1b84, type: 3}
+      spawnPosition: {x: -6, y: 3.5, z: 0}
+    - enemyPrefab: {fileID: 2655041415644549604, guid: 845d27c4686597a43b3d2cb109eb1b84, type: 3}
+      spawnPosition: {x: -8, y: 0.6, z: 0}
+    - enemyPrefab: {fileID: 2655041415644549604, guid: 845d27c4686597a43b3d2cb109eb1b84, type: 3}
+      spawnPosition: {x: 9, y: 5, z: 0}
 --- !u!4 &167781981
 Transform:
   m_ObjectHideFlags: 0
@@ -692,12 +727,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
+  m_MatchWidthOrHeight: 0.5
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
@@ -713,7 +748,7 @@ Canvas:
   m_Enabled: 1
   serializedVersion: 3
   m_RenderMode: 0
-  m_Camera: {fileID: 0}
+  m_Camera: {fileID: 618289235}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
@@ -798,7 +833,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timerText: {fileID: 571476187}
-  startTime: 81
+  startTime: 61
   sceneController: {fileID: 618289237}
 --- !u!114 &571476187
 MonoBehaviour:
@@ -1035,9 +1070,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 17695370}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 670, y: 505}
+  m_AnchorMin: {x: 1, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: -290, y: -35}
   m_SizeDelta: {x: 400, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &619306137
@@ -1415,12 +1450,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
+  m_MatchWidthOrHeight: 0.5
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96

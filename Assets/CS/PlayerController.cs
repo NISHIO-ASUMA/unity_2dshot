@@ -7,7 +7,7 @@ public class PlayerController : MonoBehaviour
 {// プレイヤー制御スクリプト
 
     //****************************
-    // プレイヤーの状態
+    // プレイヤーの状態列挙型
     //****************************
     private enum PlayerState
     {
@@ -27,13 +27,10 @@ public class PlayerController : MonoBehaviour
     public float fSpeed = 5.0f;    // 移動速度
     public int playerLife = 10;    // 体力
 
-    // 弾のゲームオブジェクト
-    public GameObject BulletObj;
-
+    public GameObject BulletObj;    // 弾のゲームオブジェクト
     private float currentAngle = 0f; // 現在の角度
     private Rigidbody2D rb;          // Rigidbodyを取得する用の変数
     private Vector2 moveInput;       // 移動量
-
     Vector3 bulletPoint;             // 弾の位置
 
     //***************************
@@ -49,7 +46,6 @@ public class PlayerController : MonoBehaviour
     private bool isBlinking = false;          // 点滅中かどうか
     private float blinkTime = 0.2f;           // 点滅間隔
     private float blinkDuration = 1f;         // 点滅時間の継続時間
-
     public int currentHealth;                 // 体力減少値
 
     // スタート関数
@@ -69,23 +65,27 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        // 常に操作可能にするため、状態に関わらず移動処理
-        HandleMovement();
-
-        // 弾を発射する処理（常に操作可能）
-        if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.JoystickButton1))
+        // プレイヤーが生存していたら
+        if (currentHealth > 0)
         {
-            // 弾発射関数
-            ShootBullet();
-        }
+            // 移動処理
+            HandleMovement();
 
-        // 無敵状態の処理
-        if (currentState == PlayerState.Invincible)
-        {
-            invincibleTimer -= Time.deltaTime;
-            if (invincibleTimer <= 0)
+            // 弾を発射する処理（常に操作可能）
+            if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.JoystickButton1))
             {
-                currentState = PlayerState.Normal;  // 無敵時間が終わったら通常状態
+                // 弾発射関数
+                ShootBullet();
+            }
+
+            // 無敵状態の処理
+            if (currentState == PlayerState.Invincible)
+            {
+                invincibleTimer -= Time.deltaTime;
+                if (invincibleTimer <= 0)
+                {
+                    currentState = PlayerState.Normal;  // 無敵時間が終わったら通常状態
+                }
             }
         }
     }
